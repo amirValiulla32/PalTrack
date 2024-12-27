@@ -1,0 +1,122 @@
+[
+    {
+        "url": "https://rss.nytimes.com/services/xml/rss/nyt/MiddleEast.xml",
+        "publisher": "The New York Times",
+        "format": "rss"
+    },
+    {
+        "url": "https://moxie.foxnews.com/google-publisher/world.xml",
+        "publisher": "Fox News",
+        "format": "erss"
+    },
+    {
+        "url": "http://associated-press.s3-website-us-east-1.amazonaws.com/world-news.xml",
+        "publisher": "The Associated Press",
+        "format": "rss"
+    },
+    {
+        "url": "https://feeds.npr.org/1009/rss.xml",
+        "publisher": "National Public Radio",
+        "format": "erss"
+    },
+    {
+        "url": "https://www.cnn.com",
+        "publisher": "CNN",
+        "format": "cnn"
+    },
+    {
+        "url": "https://www.aljazeera.com/xml/rss/all.xml",
+        "publisher": "Al Jazeera",
+        "format": "rss"
+    },
+    {
+        "url": "https://www.theguardian.com/world/rss",
+        "publisher": "The Guardian",
+        "format": "rss"
+    },
+    {
+        "url": "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml",
+        "publisher": "BBC",
+        "format": "rss"
+    },
+    {
+        "url": "https://www.middleeasteye.net/rss",
+        "publisher": "Middle East Eye",
+        "format": "rdo"
+    },
+    {
+        "url": "https://english.alaraby.co.uk/english/RSS",
+        "publisher": "The New Arab - English",
+        "format": "erss"
+    },
+    {
+        "url": "https://www.alaraby.co.uk/rss",
+        "publisher": "The New Arab - Arabic",
+        "format": "erss"
+    },
+    {
+        "url": "https://www.palestinechronicle.com/feed/",
+        "publisher": "The Palestine Chronicle",
+        "format": "erss"
+    },
+    {
+        "url": "https://english.pnn.ps/feed/",
+        "publisher": "Palestine News Network - English",
+        "format": "rdo"
+    },
+    {
+        "url": "https://pnn.ps/feed",
+        "publisher": "Palestine News Network - Arabic",
+        "format": "rdo"
+    },
+    {
+        "url": "https://rss.jpost.com/rss/rssfeedsmiddleeastnews.aspx",
+        "publisher": "The Jerusalem Post",
+        "format": "rss"
+    },
+    {
+        "url": "https://www.middleeastmonitor.com/feed/",
+        "publisher": "Middle East Monitor",
+        "format": "rss"
+    },
+    {
+        "url": "https://www.albawaba.com/rss/all",
+        "publisher": "Al-Bawaba - English",
+        "format": "rss"
+    },
+    {
+        "url": "https://www.albawaba.com/rss/ar-all",
+        "publisher": "Al-Bawaba - Arabic",
+        "format": "rss"
+    },
+    {
+        "url": "https://palestinegazette.com/rss/category/palestine",
+        "publisher": "The Palestine Gazette",
+        "format": "erss"
+    },
+    {
+        "url": "https://www.972mag.com/feed/",
+        "publisher": "+972 Magazine",
+        "format": "rss"
+    },
+    {
+        "url": "https://theintercept.com/feed/",
+        "publisher": "The Intercept",
+        "format": "erss"
+    },
+    {
+        "url": "https://responsiblestatecraft.org/feeds/feed.rss",
+        "publisher": "Responsible Statecraft",
+        "format": "rdo"
+    },
+    {
+        "url": "https://www.maannews.net",
+        "publisher": "Ma'an News",
+        "format": "maan"
+    },
+    {
+        "url": "https://www.hespress.com",
+        "publisher": "Hespress",
+        "format": "hespress"
+    }
+]
