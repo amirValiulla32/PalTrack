@@ -15,6 +15,7 @@ import orjson
 
 PALTRACK_MODULES = {
     "crawler",
+    "gsql"
 }
 PALTRACK_VERSION = "0.1.0-dev"
 
