@@ -12,6 +12,7 @@ import sys
 import aiohttp
 import aiomysql
 import feedparser
+import loguih
 from loguru import logger
 # TODO: port to newspaper4k
 import newspaper
@@ -159,6 +160,7 @@ async def main():
     ctx = CrawlerContext(pool, aiohttp.ClientSession(connector=connector))
     logger.remove()
     logger.add(sys.stdout, colorize=True, format="<green>{time: YYYY-MM-DD HH:mm:ss.SSS}</green> <level>{level}</level> <b>(crawler)</b> {message}")
+    loguih.setup()
     nltk.download("punkt_tab")
 
     _tasks = []

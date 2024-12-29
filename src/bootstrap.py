@@ -3,12 +3,14 @@
 
 import asyncio
 import glob
+import logging
 import os
 import signal
 import subprocess
 import sys
 
 import aiomysql
+import loguih
 from loguru import logger
 import prctl
 import orjson
@@ -33,6 +35,7 @@ async def main():
     # Set up logging facilities
     logger.remove()
     logger.add(sys.stdout, colorize=True, format="<green>{time: YYYY-MM-DD HH:mm:ss.SSS}</green> <level>{level}</level> <b>(bootstrap)</b> {message}")
+    loguih.setup()
 
     # Load database credentials
     creds = orjson.loads(open("../secrets/db.json", "r").read())
