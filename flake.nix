@@ -13,7 +13,7 @@
           inherit system;
         };
         # TODO: upgrade to python313
-        pp = pkgs.python312Packages;
+        pp = pkgs.python313Packages;
         #multiprocessing-logging = pp.buildPythonPackage rec {
         #  pname = "multiprocessing-logging";
         #  version = "0.3.4";
@@ -80,7 +80,7 @@
         };
         basePkgs = with pkgs; [
           bash
-          python312
+          python313
         ] ++ (with pp; [
           feedparser
           orjson
@@ -90,7 +90,7 @@
           aiodns
           newspaper3k
           python-prctl
-          loguru-intercepthandler.packages.${system}.py12
+          loguru-intercepthandler.packages.${system}.py13
           #multiprocessing-logging
         ]);
         feedsearch-crawler = pp.buildPythonPackage rec {
