@@ -24,7 +24,23 @@ CrawlerContext = collections.namedtuple("CrawlerContext", ("pool", "session"))
 Feed = collections.namedtuple("Feed", ("url", "publisher", "form"))
 ArticleInfo = collections.namedtuple("ArticleInfo", ("title", "publisher", "link"))
 
-def fix_escaped_unicode(i):
+async def save_article_to_relevancy(conn: aiomysql.Connection, cur: aiomysql.Cursor, article_info: ArticleInfo, article_text: str):
+    while True:
+        try:
+            await cur.execute("INSERT INTO CrawlerToRelevancy "
+                              "(publisher, title, article_text, link) "
+                              "VALUES "
+                              "(%s, %s, %s, %s);",
+                              (article_info.publisher, article_info.title, article_text, article_info.link))
+            await conn.commit()
+        except pymysql.err.OperationalError:
+            await asyncio.sleep(0.25)
+            continue
+        except pymysql.err.IntegrityError:
+            logger.warn(f"Could not send {article_info.title} to relevancy")
+        break
+
+def fix_escaped_unicode(i) -> str:
     b = []
     e = 0
     for m in re.finditer(r'\\x([0-9a-fA-F]{2})', i):
@@ -43,7 +59,7 @@ async def fetch_full_article(ctx: CrawlerContext, url: str) -> newspaper.Article
         art.parse()
         return art
 
-async def article_seen(conn: aiomysql.Connection, cur: aiomysql.Cursor, art: ArticleInfo):
+async def article_seen(conn: aiomysql.Connection, cur: aiomysql.Cursor, art: ArticleInfo) -> bool:
     sha = hashlib.sha256(art.link.encode("utf-8")).hexdigest()
     await cur.execute("SELECT 1 "
                       "FROM SeenCoverage "
@@ -89,17 +105,19 @@ async def feeder(ctx: CrawlerContext, feed: Feed):
                     articles = feedparser.parse(str(await resp.read()), response_headers=headers)["entries"]
                 for article in articles:
                     title = fix_escaped_unicode(article["title"])
-                    if await article_seen(conn, cur, ArticleInfo(title, feed.publisher, article["link"])):
+                    article_info = ArticleInfo(title, feed.publisher, article["link"])
+                    if await article_seen(conn, cur, article_info):
                         continue
                     if "description" not in article:
                         article["description"] = "No description provided."
                     if feed.form == "erss" and "content" in article:
-                        article_info = "Summary: " + article["description"] + "\nText: " + article["content"][0]["value"]
+                        article_text = "Summary: " + article["description"] + "\nText: " + article["content"][0]["value"]
                     elif feed.form == "rss" or feed.form == "erss":
-                        article_info = "Summary: " + article["description"] + "\nText: " + (await fetch_full_article(ctx, article["link"])).text
+                        article_text = "Summary: " + article["description"] + "\nText: " + (await fetch_full_article(ctx, article["link"])).text
                     elif feed.form == "rdo":
-                        article_info = "Text: " + article["description"]
+                        article_text = "Text: " + article["description"]
                     logger.debug(f"Read {title} from {feed.publisher}")
+                    await save_article_to_relevancy(conn, cur, article_info, article_text)
             case "cnn" | "maan" | "hespress" | "n3k":
                 # TODO: fork newspaper3k, use async requests only
                 if feed.form == "cnn":
@@ -140,11 +158,13 @@ async def feeder(ctx: CrawlerContext, feed: Feed):
                 for url in articles:
                     article = await fetch_full_article(ctx, url)
                     title = fix_escaped_unicode(article.title)
-                    if await article_seen(conn, cur, ArticleInfo(title, feed.publisher, url)):
+                    article_info = ArticleInfo(title, feed.publisher, url)
+                    if await article_seen(conn, cur, article_info):
                         continue
                     article.nlp()
-                    article_info = "Summary: " + article.summary + "\nText: " + article.text
+                    article_text = "Summary: " + article.summary + "\nText: " + article.text
                     logger.debug(f"Read {title} from {feed.publisher}")
+                    await save_article_to_relevancy(conn, cur, article_info, article_text)
             case _:
                 logger.error(f"unrecognized feed type {feed.form} for publisher {feed.publisher}")
         await ctx.pool.release(conn)
