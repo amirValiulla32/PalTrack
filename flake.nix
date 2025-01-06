@@ -5,14 +5,14 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     loguru-intercepthandler.url = "github:amyipdev/loguru-intercepthandler";
+    teestream.url = "github:amyipdev/teestream";
   };
-  outputs = {self, nixpkgs, flake-utils, loguru-intercepthandler}:
+  outputs = {self, nixpkgs, flake-utils, loguru-intercepthandler, teestream}:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
         };
-        # TODO: upgrade to python313
         pp = pkgs.python313Packages;
         #multiprocessing-logging = pp.buildPythonPackage rec {
         #  pname = "multiprocessing-logging";
@@ -91,6 +91,7 @@
           newspaper3k
           python-prctl
           loguru-intercepthandler.packages.${system}.py13
+          teestream.packages.${system}.default
           #multiprocessing-logging
         ]);
         feedsearch-crawler = pp.buildPythonPackage rec {

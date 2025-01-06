@@ -14,6 +14,7 @@ import loguih
 from loguru import logger
 import prctl
 import orjson
+import teestream
 
 PALTRACK_MODULES = {
     "crawler",
@@ -36,6 +37,8 @@ async def main():
     logger.remove()
     logger.add(sys.stdout, colorize=True, format="<green>{time: YYYY-MM-DD HH:mm:ss.SSS}</green> <level>{level}</level> <b>(bootstrap)</b> {message}")
     loguih.setup()
+    # Split output between stdout/stderr and a file
+    teestream.load_default_redirect("paltrack")
 
     # Load database credentials
     creds = orjson.loads(open("../secrets/db.json", "r").read())
