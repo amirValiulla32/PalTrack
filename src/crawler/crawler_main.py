@@ -117,7 +117,7 @@ async def feeder(ctx: CrawlerContext, feed: Feed):
                     elif feed.form == "rdo":
                         article_text = "Text: " + article["description"]
                     logger.debug(f"Read {title} from {feed.publisher}")
-                    await save_article_to_relevancy(conn, cur, article_info, article_text)
+                    await save_article_to_relevancy(conn, cur, article_info, fix_escaped_unicode(article_text))
             case "cnn" | "maan" | "hespress" | "n3k":
                 # TODO: fork newspaper3k, use async requests only
                 if feed.form == "cnn":
@@ -164,7 +164,7 @@ async def feeder(ctx: CrawlerContext, feed: Feed):
                     article.nlp()
                     article_text = "Summary: " + article.summary + "\nText: " + article.text
                     logger.debug(f"Read {title} from {feed.publisher}")
-                    await save_article_to_relevancy(conn, cur, article_info, article_text)
+                    await save_article_to_relevancy(conn, cur, article_info, fix_escaped_unicode(article_text))
             case _:
                 logger.error(f"unrecognized feed type {feed.form} for publisher {feed.publisher}")
         await ctx.pool.release(conn)
