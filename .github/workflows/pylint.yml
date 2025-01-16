@@ -12,8 +12,8 @@ jobs:
       with:
         nix_path: nixpkgs=channel:nixos-unstable
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Set up Nix development environment
-      uses: nicknovitski/nix-develop@v1.2.1
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        nix develop --command \ 
+          pylint \ 
+            $(git ls-files '*.py')
