@@ -126,6 +126,7 @@
             openssh
             lix
             feedsearch-crawler
+            pylint
           ]);
         };
         packages.default = pkgs.stdenv.mkDerivation rec {
