@@ -14,4 +14,4 @@ jobs:
         github_access_token: ${{ secrets.GITHUB_TOKEN }}
     - name: Analysing the code with pylint
       run: |
-        nix develop --command pylint $(git ls-files '*.py')
+        nix develop --command pylint --extension-pkg-allow-list=orjson --generated-member=prctl.set_pdeathsig $(git ls-files '*.py')

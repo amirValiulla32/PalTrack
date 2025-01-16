@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+"""Bootstrapper for PalTrack. Launches modules and verifies database access."""
+
 import asyncio
 import glob
-import logging
 import os
 import signal
 import subprocess
@@ -23,25 +24,30 @@ PALTRACK_MODULES = {
 PALTRACK_VERSION = "0.1.0-dev"
 
 async def main():
+    """Main function, checks database access, updates tables, and launches modules."""
     # Set up environment variables
     os.environ["PALTRACK_VERSION"] = PALTRACK_VERSION
 
     # Set working directory to script/installation directory
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-    print(f"\n\x1b[31;1mPal\x1b[37;1mTr\x1b[32;1mack \x1b[39;1mv{PALTRACK_VERSION} bootstrap\x1b[0m\n"
+    print(f"\n\x1b[31;1mPal\x1b[37;1mTr\x1b[32;1mack "
+          f"\x1b[39;1mv{PALTRACK_VERSION} bootstrap\x1b[0m\n"
           f"\x1b[37;3m(c) Copyright 2024 Amir Valiulla, Amy Parker, Dahlia Sukaik\n"
-          f"Licensed under the AGPLv3 <\x1b[1m\x1b]8;;https://www.gnu.org/licenses/agpl-3.0.html\x1b\\gnu.org/licenses/agpl-3.0.html\x1b]8;;\x1b\\\x1b[0m\x1b[37m>\x1b[0m\n")
+          f"Licensed under the AGPLv3 <\x1b[1m\x1b]8;;https://www.gnu.org/licenses/agpl-3.0.html"
+          f"\x1b\\gnu.org/licenses/agpl-3.0.html\x1b]8;;\x1b\\\x1b[0m\x1b[37m>\x1b[0m\n")
 
     # Set up logging facilities
     logger.remove()
-    logger.add(sys.stdout, colorize=True, format="<green>{time: YYYY-MM-DD HH:mm:ss.SSS}</green> <level>{level}</level> <b>(bootstrap)</b> {message}")
+    logger.add(sys.stdout, colorize=True, format="<green>{time: YYYY-MM-DD HH:mm:ss.SSS}</green>"
+               " <level>{level}</level> <b>(bootstrap)</b> {message}")
     loguih.setup()
     # Split output between stdout/stderr and a file
     teestream.load_default_redirect("paltrack")
 
     # Load database credentials
-    creds = orjson.loads(open("../secrets/db.json", "r").read())
+    with open("../secrets/db.json", "r", encoding="utf-8") as _s:
+        creds = orjson.loads(_s.read())
 
     # Connect to and update the database
     conn = await aiomysql.connect(**creds)
@@ -68,7 +74,8 @@ async def main():
         ver = table_versions.get(mod, 0)
         max_ver = int(sorted(glob.glob(f"{mod}/{mod}-*.sql"))[-1][-8:-4])
         for n in range(ver+1, max_ver+1):
-            cmds = open(f"{mod}/{mod}-{str(n).zfill(4)}.sql", "r").read()
+            with open(f"{mod}/{mod}-{str(n).zfill(4)}.sql", "r", encoding="utf-8") as _f:
+                cmds = _f.read()
             for cmd in cmds.split("\n"):
                 if cmd.isspace() or cmd == "":
                     continue
@@ -88,9 +95,12 @@ async def main():
     await cur.close()
     conn.close()
 
-    procs = [subprocess.Popen(["python3", f"{x}/{x}_main.py"], shell=False, preexec_fn=lambda: prctl.set_pdeathsig(signal.SIGKILL)) for x in PALTRACK_MODULES]
-    while True:
-        await asyncio.sleep(10)
+    # pylint: disable=consider-using-with,subprocess-popen-preexec-fn
+    procs = [subprocess.Popen(["python3", f"{x}/{x}_main.py"],
+                              shell=False,
+                              preexec_fn=lambda: prctl.set_pdeathsig(signal.SIGKILL))
+                                                   for x in PALTRACK_MODULES]
+    await asyncio.gather(*procs)
 
 if __name__ == "__main__":
     asyncio.run(main())
