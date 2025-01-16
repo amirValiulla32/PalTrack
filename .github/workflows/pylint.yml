@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set up Nix development environment
-      uses: nicknovitski/nix-develop@v1
+      uses: nicknovitski/nix-develop@v1.2.1
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
