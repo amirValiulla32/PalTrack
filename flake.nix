@@ -115,6 +115,46 @@
             yarl
           ];
         };
+        astroid = pp.buildPythonPackage rec {
+          pname = "astroid";
+          version = "3.3.8";
+          nativeBuildInputs = with pp; [
+            setuptools
+          ];
+          src = pp.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-qIx5lPkUpOqFcvrEeUWfSVXuzMh3vj8tlZozJzsM9As=";
+          };
+          doCheck = false;
+          pyproject = true;
+          propagatedBuildInputs = with pp; [
+            typing-extensions
+          ];
+        };
+        pylint = pp.buildPythonPackage rec {
+          pname = "pylint";
+          version = "3.3.3";
+          nativeBuildInputs = with pp; [
+            setuptools
+          ];
+          src = pp.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-B8YHUjsX5tFuKuDX71lgLjMsqnYq9kIDwktBwnE582o=";
+          };
+          pyproject = true;
+          doCheck = false;
+          propagatedBuildInputs = with pp; [
+            dill
+            platformdirs
+            astroid
+            pp.isort
+            mccabe
+            tomli
+            tomlkit
+            colorama
+            typing-extensions
+          ];
+        };
       in {
         devShells.default = pkgs.mkShell {
           buildInputs = basePkgs ++ (with pkgs; [
