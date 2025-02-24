@@ -1,0 +1,21 @@
+FROM python:3.10-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the crawler script and feeds.json from src/crawler/
+COPY src/crawler/crawler_main.py src/crawler/feeds.json /app/
+
+# Set the default command to run the crawler
+CMD ["python", "crawler_main.py"]
+
