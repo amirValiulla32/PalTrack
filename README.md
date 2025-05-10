@@ -64,4 +64,4 @@ This project is licensed under the [GNU Affero General Public License v3.0](http
 
 ##  Contact
 
-For questions, suggestions, or collaboration inquiries, please contact [Amir Valiulla](amirvaliulla32@gmail.com).
+For questions, suggestions, or collaboration inquiries, please contact [Amir Valiulla](https://github.com/amirValiulla32).
